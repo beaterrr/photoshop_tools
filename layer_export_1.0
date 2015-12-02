@@ -1,0 +1,33 @@
+/**
+creator = marshamellowtitan
+This script save all layers, individually,  into png format. Developed so that I
+can have more control (as needed) over the export layers script tht ship with pshop
+
+version 1.00
+**/
+
+//defining the open and active file
+var docRef = app.activeDocument
+
+//determing how many layers are in the file
+var layerCount = app.activeDocument.layers.length
+
+
+//creating the save instructions...not actually called until later
+function exportLayerPNG(layerIndex) {
+	var pngOutput = new PNGSaveOptions();
+	var path = File(docRef.path + "/" + docRef.artLayers[layerIndex].name + ".png");
+	docRef.saveAs(path, pngOutput, true);
+}
+
+//turning off all layer
+for (var i = 0; i < layerCount; i++) {
+	docRef.artLayers[i].visible = false;
+}
+
+//processing each layer, one by oe
+for (var i = 0; i < layerCount; i++) {
+	docRef.artLayers[i].visible = true;
+	exportLayerPNG(i);
+	docRef.artLayers[i].visible = false;
+}
