@@ -1,0 +1,52 @@
+
+/**
+creator = marshamellowtitan
+This script save all layers, individually,  into png format. Developed so that I
+can have more control (as needed) over the export layers script tht ship with pshop
+
+version 1.01
+**/
+
+//defining the open and active file
+DocRef = app.activeDocument;
+
+//determing how many layers are in the file
+var layerCount = app.activeDocument.layers.length
+
+//creating the save instructions...not actually called until later
+function exportLayerPNG(layerIndex) {
+	var pngOutput = new PNGSaveOptions();
+	var path = File(DocRef.path + "/" + DocRef.artLayers[layerIndex].name + ".png");
+	DocRef.saveAs(path, pngOutput, true);
+}
+
+textColor = new SolidColor;
+textColor.rgb.red = 255;
+textColor.rgb.green = 0;
+textColor.rgb.blue = 0;
+
+//Grabbing the docs height and then dividing it by 20 to determine how big the text should be
+mySize =  DocRef.height.as('px') /20
+//tricky...but the active documents height divided by 1 gives you the bottom 0,0 point of the doc...then I'm offset upwards a small bit by subtracting text size.
+myHeight = (DocRef.height.as('px') /1 -(mySize))
+
+//turning off all layer
+for (var i = 0; i < layerCount; i++) {
+	DocRef.artLayers[i].visible = false;
+}
+
+//processing each layer, one by oe
+for (var i = 0; i < layerCount; i++) {
+	DocRef.artLayers[i].visible = true;
+	titleText = (DocRef.artLayers[i].name)
+	newTextLayer = DocRef.artLayers.add()
+	newTextLayer.kind = LayerKind.TEXT
+
+	newTextLayer.textItem.contents = titleText
+	newTextLayer.textItem.position = Array(0, myHeight)
+	newTextLayer.textItem.size = mySize
+	newTextLayer.textItem.color = textColor
+	//exportLayerPNG(i);
+	DocRef.artLayers[i].visible = false;
+}
+
